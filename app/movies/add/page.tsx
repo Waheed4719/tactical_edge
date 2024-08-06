@@ -1,0 +1,140 @@
+"use client";
+import React, { useState, useEffect } from "react";
+import Button from "@/app/components/Button";
+import Input from "@/app/components/Input";
+import MoviesHeader from "@/app/components/MoviesHeader";
+import Dropzone from "@/app/components/Dropzone";
+
+type Props = {};
+
+const AddMovie = (props: Props) => {
+  const [title, setTitle] = useState({ value: "", isValid: true });
+  const [publishingYear, setPublishingYear] = useState({
+    value: "",
+    isValid: true,
+  });
+  const [errors, setErrors] = useState<{
+    title?: string;
+    publishingYear?: string;
+  }>({});
+
+  const validateTitle = (value: string) => {
+    if (!value) {
+      setErrors((prev) => ({ ...prev, title: "Title is required." }));
+      return false;
+    } else {
+      setErrors((prev) => {
+        const { title, ...rest } = prev;
+        return rest;
+      });
+      return true;
+    }
+  };
+
+  const validatePublishingYear = (value: string) => {
+    if (!value) {
+      setErrors((prev) => ({
+        ...prev,
+        publishingYear: "Publishing year is required.",
+      }));
+      return false;
+    } else if (isNaN(Number(value)) || Number(value) <= 0) {
+      setErrors((prev) => ({
+        ...prev,
+        publishingYear: "Publishing year must be a positive number.",
+      }));
+      return false;
+    } else {
+      setErrors((prev) => {
+        const { publishingYear, ...rest } = prev;
+        return rest;
+      });
+      return true;
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    if (name === "title") {
+      const isValid = validateTitle(value);
+      setTitle({ value, isValid });
+    } else if (name === "publishingYear") {
+      const isValid = validatePublishingYear(value);
+      setPublishingYear({ value, isValid });
+    }
+  };
+
+  const handleSubmit = () => {
+    const isTitleValid = validateTitle(title.value);
+    const isPublishingYearValid = validatePublishingYear(publishingYear.value);
+
+    if (isTitleValid && isPublishingYearValid) {
+      // Perform the submit action
+      console.log("Form is valid, submitting...");
+    } else {
+      console.log("Form is invalid, showing errors.");
+    }
+  };
+  return (
+    <div className="container mx-auto p-8 min-h-screen py-20 max-w-[1440px] ">
+      <MoviesHeader type="Add" />
+      <div className="flex justify-start items-start flex-wrap md:flex-nowrap gap-12 md:gap-20">
+        {/* Left side (Dropzone) */}
+        <Dropzone />
+
+        {/* Right side (Form fields) */}
+        <div className="md:px-8 max-w-full">
+          <div className="mb-4">
+            <Input
+              id="title"
+              type="text"
+              name="title"
+              value={title.value}
+              onChange={handleChange}
+              className={`h-[45px] max-w-full w-[362px]  p-4 bg-inputColor rounded-[10px] outline-none ${
+                errors.title ? "border border-red-500" : ""
+              }`}
+              placeholder="Enter movie title"
+            />
+            {errors.title && (
+              <p className="text-red-500 mt-1">{errors.title}</p>
+            )}
+          </div>
+          <div className="mb-4">
+            <Input
+              id="publishingYear"
+              type="number"
+              name="publishingYear"
+              value={publishingYear.value}
+              onChange={handleChange}
+              className={`h-[45px] w-[216px] p-4 bg-inputColor rounded-[10px] outline-none ${
+                errors.publishingYear ? "border border-red-500" : ""
+              }`}
+              placeholder="Enter publishing year"
+            />
+            {errors.publishingYear && (
+              <p className="text-red-500 mt-1">{errors.publishingYear}</p>
+            )}
+          </div>
+          <div className="flex gap-4 mt-12">
+            <Button
+              size="large"
+              className="bg-transparent text-white px-4 py-2 rounded border border-white flex flex-1 justify-center font-bold"
+            >
+              Cancel
+            </Button>
+            <Button
+              size="large"
+              className="bg-primary text-white px-4 py-2 rounded flex flex-1 justify-center font-bold"
+              onClick={handleSubmit}
+            >
+              Submit
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AddMovie;

@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import "./globals.css";
+import "./assets/common.css";
+import Image from "next/image";
 
-const inter = Inter({ subsets: ["latin"] });
+const montserrat = Montserrat({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,7 +18,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={`${montserrat.className} relative bg-bgColor`}>
+        <div className="z-10 relative">{children}</div>
+        <Image
+          src="/vectors.svg"
+          alt="Vercel Logo"
+          className="w-full absolute bottom-0 left-0 object-contain object-bottom z-[1]"
+          width={100}
+          height={24}
+          priority
+        />
+      </body>
     </html>
   );
 }
