@@ -4,25 +4,30 @@ Welcome to Tactical Edge Assignment! This repository contains the source code fo
 
 ## Login/Register Page
 
-![Login/Register Page](/path/to/login_register_screenshot.png)
+![Login/Register Page](/public/images/sign-in.png)
 
 To access our application, you will need to create an account or log in if you already have one. The login/register page provides a simple and intuitive interface for users to authenticate and access the features of our application.
 
 ## Movie List with Pagination
 
-![Movie List](/path/to/movie_list_screenshot.png)
+![Movie List](/public/images/movie-listing.png)
 
 Our application includes a comprehensive movie list with pagination. This allows users to easily browse through a large collection of movies. The pagination feature ensures that the movie list is displayed in a user-friendly manner, making it easy to navigate and find the desired movie.
 
 ## Add/Edit Movie
 
-![Add/Edit Movie](/path/to/add_edit_movie_screenshot.png)
+![Add/Edit Movie](/public/images/add-movie.png)
 
 With our application, users have the ability to add and edit movie details. This feature allows users to contribute to the movie database and keep it up to date. The screenshots above demonstrate the user-friendly interface for adding and editing movie information.
 
 ## API Documentation with Swagger
 
+![API Documentation](/public/images/api-doc.png)
+
 We have integrated Swagger into our application to provide comprehensive API documentation. Swagger allows developers to explore and test our API endpoints, making it easier to understand and integrate with our application. The API documentation provides detailed information on each endpoint, including request and response examples.
+
+To view the API documentation, navigate to `/api-doc` in your browser. You can use the following credentials for testing purposes:
+
 
 ## Containerization with Docker
 
@@ -47,3 +52,8 @@ To start the app, follow these steps:
 3. Install dependencies: `npm install`
 4. Build the app: `npm run build`
 5. Start the app: `npm run start`
+
+
+To test the site out, you may use the following dummy email and password
+- Email: `test@email.com`
+- Password: `test@email.com`
