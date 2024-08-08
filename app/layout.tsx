@@ -20,8 +20,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <Provider>
-        <body className={`${montserrat.className} relative bg-bgColor`}>
+      <body
+        className={`${montserrat.className} relative bg-bgColor`}
+        suppressHydrationWarning={true}
+      >
+        <Provider>
           <div className="z-10 relative min-h-screen">{children}</div>
           <Image
             src="/vectors.svg"
@@ -31,9 +34,9 @@ export default function RootLayout({
             height={24}
             priority
           />
-        </body>
+        </Provider>
         <ToastContainer autoClose={3000} />
-      </Provider>
+      </body>
     </html>
   );
 }

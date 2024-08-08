@@ -2,7 +2,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 import Button from "./Button";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 type MoviesHeaderProps = {
   type: "Add" | "List" | "Edit";
@@ -10,6 +10,8 @@ type MoviesHeaderProps = {
 
 const MoviesHeader = ({ type }: MoviesHeaderProps) => {
   const router = useRouter();
+  const { data: session } = useSession();
+
   const getHeaderTitle = () => {
     switch (type) {
       case "Add":
@@ -45,7 +47,8 @@ const MoviesHeader = ({ type }: MoviesHeaderProps) => {
         </Button>
       )}
 
-      <div className="ml-auto flex flex-row gap-2">
+      <div className="ml-auto flex flex-row gap-4">
+        <h4 className="text-white">Hello, {session?.user?.name || "User"} <span className="ml-3">|</span> </h4>{" "}
         <Button
           onClick={handleSignOut}
           className="bg-transparent text-white flex items-center gap-4"

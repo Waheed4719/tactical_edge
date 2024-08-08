@@ -8,6 +8,7 @@ export const register = async (values: any) => {
 
   try {
     await connectDB();
+    console.log(values)
     const userFound = await User.findOne({ email });
     if (userFound) {
       return {
@@ -20,7 +21,7 @@ export const register = async (values: any) => {
       email,
       password: hashedPassword,
     });
-    const savedUser = await user.save();
+    await user.save();
   } catch (e) {
     console.log(e);
   }

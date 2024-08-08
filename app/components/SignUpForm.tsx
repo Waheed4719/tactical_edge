@@ -72,7 +72,7 @@ const SignUpForm = (props: Props) => {
       return;
     } else {
       toast.success("Signed up successfully.");
-      router.push("/login");
+      router.push("/signin");
     }
   };
 
