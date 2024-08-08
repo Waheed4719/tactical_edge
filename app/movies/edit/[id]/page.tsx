@@ -4,10 +4,25 @@ import Button from "@/app/components/Button";
 import Input from "@/app/components/Input";
 import MoviesHeader from "@/app/components/MoviesHeader";
 import Dropzone from "@/app/components/Dropzone";
+import { addOrUpdateMovie } from "@/actions/addOrUpdateMovie";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useParams, useRouter } from "next/navigation";
+import { uploadToCloudinary } from "@/utils/cloudinary";
 
-type Props = {};
+type Movie = {
+  title: string;
+  publishingYear: number;
+  imageUrl: string;
+};
 
-const AddMovie = (props: Props) => {
+const EditMovie = () => {
+  const router = useRouter();
+  const { id: movieId } = useParams();
+  const [file, setFile] = useState<File | null>(null);
+
+  const [movie, setMovie] = useState<Movie | null>(null);
+  const [imageUrl, setImageUrl] = useState<string>("");
   const [title, setTitle] = useState({ value: "", isValid: true });
   const [publishingYear, setPublishingYear] = useState({
     value: "",
@@ -17,6 +32,26 @@ const AddMovie = (props: Props) => {
     title?: string;
     publishingYear?: string;
   }>({});
+  useEffect(() => {
+    if (movieId) {
+      // Fetch the movie data when component mounts
+      fetch(`/api/movies/${movieId}`)
+        .then((res) => res.json())
+        .then(({ data }) => {
+          setMovie(data);
+          setTitle({ value: data.title, isValid: true });
+          setPublishingYear({
+            value: data.publishingYear.toString(),
+            isValid: true,
+          });
+          setImageUrl(data.imageUrl);
+        })
+        .catch((error) => {
+          console.error("Error fetching movie data:", error);
+          toast.error("Failed to fetch movie data.");
+        });
+    }
+  }, [movieId]);
 
   const validateTitle = (value: string) => {
     if (!value) {
@@ -64,23 +99,64 @@ const AddMovie = (props: Props) => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const isTitleValid = validateTitle(title.value);
     const isPublishingYearValid = validatePublishingYear(publishingYear.value);
 
-    if (isTitleValid && isPublishingYearValid) {
-      // Perform the submit action
-      console.log("Form is valid, submitting...");
-    } else {
-      console.log("Form is invalid, showing errors.");
+    if (!file && !imageUrl) {
+      toast.error("Please upload an image.");
+      return;
+    }
+
+    try {
+      let uploadedImageUrl = imageUrl;
+      if (file) {
+        uploadedImageUrl = await uploadToCloudinary(file);
+      }
+
+      if (isTitleValid && isPublishingYearValid && uploadedImageUrl) {
+        // Perform the submit action
+        const response = await addOrUpdateMovie({
+          id: movieId as string,
+          title: title.value,
+          publishingYear: Number(publishingYear.value),
+          imageUrl: uploadedImageUrl,
+        });
+
+        if (response.success) {
+          toast.success("Movie updated successfully!");
+          router.push("/movies");
+        } else {
+          toast.error("Failed to update movie: " + response.error);
+        }
+      } else {
+        console.log("Form is invalid, showing errors.");
+      }
+    } catch (error: any) {
+      toast.error("An error occurred: " + error.message);
     }
   };
+
+  if (!movie) {
+    return (
+      <main className="flex min-h-screen flex-col items-center justify-center">
+        <span className="text-white text-sm mt-7">Loading...</span>
+      </main>
+    ); // Add a loading state or spinner
+  }
+
+  const handleFileSelected = (file: File) => {
+    setFile(file);
+  };
+
+  const handleCancel = () => router.push("/movies");
+
   return (
-    <div className="container mx-auto p-8 min-h-screen py-20 max-w-[1440px] ">
+    <div className="container mx-auto p-8 min-h-screen py-20 max-w-[1200px] ">
       <MoviesHeader type="Edit" />
       <div className="flex justify-start items-start flex-wrap md:flex-nowrap gap-12 md:gap-20">
         {/* Left side (Dropzone) */}
-        <Dropzone />
+        <Dropzone previewUrl={imageUrl} onFileSelected={handleFileSelected} />
 
         {/* Right side (Form fields) */}
         <div className="md:px-8 max-w-full">
@@ -120,6 +196,7 @@ const AddMovie = (props: Props) => {
             <Button
               size="large"
               className="bg-transparent text-white px-4 py-2 rounded border border-white flex flex-1 justify-center font-bold"
+              onClick={handleCancel}
             >
               Cancel
             </Button>
@@ -137,4 +214,4 @@ const AddMovie = (props: Props) => {
   );
 };
 
-export default AddMovie;
+export default EditMovie;

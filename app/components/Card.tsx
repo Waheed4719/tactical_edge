@@ -2,16 +2,18 @@ import Image from "next/image";
 import React from "react";
 
 type CardProps = {
+  id: string;
   title: string;
   publishingYear: number;
+  imageUrl: string;
 };
 
-const Card = ({ title, publishingYear }: CardProps) => {
+const Card = ({ title, publishingYear, imageUrl }: CardProps) => {
   return (
     <div className="bg-cardColor rounded-[12px] gap-4 flex-col flex  w-[282px] max-w-full p-3">
       <Image
         className="h-[400px] w-[266px] max-w-full rounded-[12px] mx-auto"
-        src="/images/emily_the_criminal.jpeg"
+        src={imageUrl}
         alt="Placeholder"
         width={266}
         height={400}

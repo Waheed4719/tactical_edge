@@ -18,14 +18,47 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  /* background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb)); */
 }
 
+.bg-inputColor {
+  background-color: #224957 !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:enabled,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:enabled,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:enabled,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-text-fill-color: #fff;
+  -webkit-box-shadow: 0 0 0px 1000px #224957 inset;
+  box-shadow: 0 0 0px 1000px #224957 inset;
+  background-color: #224957 !important;
+}
+
+.swagger-ui .opblock-body select {
+  -webkit-text-fill-color: #fff;
+  -webkit-box-shadow: 0 0 0px 1000px #224957 inset;
+  box-shadow: 0 0 0px 1000px #224957 inset;
+  background-color: #224957 !important;
+  border: 2px solid gray;
+}
+
+.swagger-ui * {
+  color: #fff !important;
+}
+.swagger-ui .opblock .opblock-section-header {
+  background-color: #224957 !important;
+}
+.swagger-ui input {
+  background-color: #224957 !important;
+}
 @layer utilities {
   .text-balance {
     text-wrap: balance;

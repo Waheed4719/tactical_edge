@@ -1,13 +1,18 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Button from "@/app/components/Button";
 import Input from "@/app/components/Input";
 import MoviesHeader from "@/app/components/MoviesHeader";
 import Dropzone from "@/app/components/Dropzone";
+import { addOrUpdateMovie } from "@/actions/addOrUpdateMovie";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useRouter } from "next/navigation";
+import { uploadToCloudinary } from "@/utils/cloudinary";
 
-type Props = {};
-
-const AddMovie = (props: Props) => {
+const AddMovie = () => {
+  const router = useRouter();
+  const [file, setFile] = useState<File | null>(null);
   const [title, setTitle] = useState({ value: "", isValid: true });
   const [publishingYear, setPublishingYear] = useState({
     value: "",
@@ -64,23 +69,51 @@ const AddMovie = (props: Props) => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const isTitleValid = validateTitle(title.value);
     const isPublishingYearValid = validatePublishingYear(publishingYear.value);
 
-    if (isTitleValid && isPublishingYearValid) {
-      // Perform the submit action
-      console.log("Form is valid, submitting...");
+    if (!file) {
+      toast.error("Please upload an image.");
+      return;
+    }
+
+    if (isTitleValid && isPublishingYearValid && file) {
+      try {
+        const url = await uploadToCloudinary(file);
+        // Perform the submit action
+        const response = await addOrUpdateMovie({
+          title: title.value,
+          publishingYear: Number(publishingYear.value),
+          imageUrl: url,
+        });
+
+        if (response.success) {
+          toast.success("Movie added successfully!");
+          router.push("/movies");
+        } else {
+          toast.error("Failed to add movie: " + response.error);
+        }
+      } catch (error: any) {
+        toast.error("An error occurred: " + error.message);
+      }
     } else {
       console.log("Form is invalid, showing errors.");
     }
   };
+
+  const handleFileSelected = (file: File) => {
+    setFile(file);
+  };
+
+  const handleCancel = () => router.push("/movies");
+
   return (
-    <div className="container mx-auto p-8 min-h-screen py-20 max-w-[1440px] ">
+    <div className="container mx-auto p-8 min-h-screen py-20 max-w-[1200px] ">
       <MoviesHeader type="Add" />
       <div className="flex justify-start items-start flex-wrap md:flex-nowrap gap-12 md:gap-20">
         {/* Left side (Dropzone) */}
-        <Dropzone />
+        <Dropzone onFileSelected={handleFileSelected} />
 
         {/* Right side (Form fields) */}
         <div className="md:px-8 max-w-full">
@@ -120,6 +153,7 @@ const AddMovie = (props: Props) => {
             <Button
               size="large"
               className="bg-transparent text-white px-4 py-2 rounded border border-white flex flex-1 justify-center font-bold"
+              onClick={handleCancel}
             >
               Cancel
             </Button>
