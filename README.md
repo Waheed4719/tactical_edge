@@ -38,3 +38,12 @@ Tactical Edge is built using the following technologies:
 
 The combination of Next.js and MongoDB allows us to create a robust and scalable application. Next.js provides a modern and efficient framework for building both the frontend and backend, while MongoDB serves as the database for storing movie information.
 
+## Start the app
+
+To start the app, follow these steps:
+
+1. Clone the repository: `git clone https://github.com/Waheed4719/tactical_edge.git`
+2. Navigate to the project directory: `cd tactical_edge`
+3. Install dependencies: `npm install`
+4. Build the app: `npm run build`
+5. Start the app: `npm run start`
