@@ -10,15 +10,13 @@ export const getMovieById = async (id: string) => {
     if (id) {
       movie = await Movie.findById(id);
       if (movie) {
-        console.log(movie);
+        movie = movie.toObject();
       } else {
         throw new Error("Movie not found");
       }
     } else {
       throw new Error("id is required");
     }
-
-    console.log("found movie", movie);
     return { success: true, data: movie };
   } catch (e: any) {
     console.log(e);

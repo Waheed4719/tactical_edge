@@ -3,6 +3,7 @@ import { Montserrat } from "next/font/google";
 import "./globals.css";
 import Image from "next/image";
 import { Provider } from "./provider";
+import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
@@ -31,7 +32,7 @@ export default function RootLayout({
             priority
           />
         </body>
-        {/* <ToastContainer /> */}
+        <ToastContainer autoClose={3000} />
       </Provider>
     </html>
   );

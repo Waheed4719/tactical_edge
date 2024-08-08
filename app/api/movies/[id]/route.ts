@@ -48,7 +48,7 @@ export async function GET(
   const { id } = params;
   // Find movie by ID
   const movie = await getMovieById(id);
-  console.log("movie", movie);
+  
   if (movie) {
     console.log("movie found", movie);
     return NextResponse.json(movie);

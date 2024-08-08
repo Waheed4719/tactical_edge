@@ -6,7 +6,6 @@ import MoviesHeader from "@/app/components/MoviesHeader";
 import Dropzone from "@/app/components/Dropzone";
 import { addOrUpdateMovie } from "@/actions/addOrUpdateMovie";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
 import { uploadToCloudinary } from "@/utils/cloudinary";
 
