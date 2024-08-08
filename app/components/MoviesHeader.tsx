@@ -31,24 +31,28 @@ const MoviesHeader = ({ type }: MoviesHeaderProps) => {
     // router.push("/signin");
   };
   return (
-    <div className="w-full max-w-[1200px] mb-12 md:mb-24 flex flex-row gap-4 items-center">
-      <h2 className="text-[24px]  md:text-h2">{getHeaderTitle()}</h2>
-      {type === "List" && (
-        <Button
-          className="bg-transparent"
-          onClick={() => router.push("/movies/add")}
-        >
-          <Image
-            src="/icons/plus-icon.svg"
-            alt="Hero Image"
-            width={35}
-            height={35}
-          />
-        </Button>
-      )}
-
-      <div className="ml-auto flex flex-row gap-4">
-        <h4 className="text-white">Hello, {session?.user?.name || "User"} <span className="ml-3">|</span> </h4>{" "}
+    <div className="w-full max-w-[1200px] mb-12 md:mb-24 flex flex-col md:flex-row gap-4 items-center">
+      <div className="flex gap-4 mr-auto">
+        <h2 className="text-[24px]  md:text-h2">{getHeaderTitle()}</h2>
+        {type === "List" && (
+          <Button
+            className="bg-transparent"
+            onClick={() => router.push("/movies/add")}
+          >
+            <Image
+              src="/icons/plus-icon.svg"
+              alt="Hero Image"
+              width={35}
+              height={35}
+            />
+          </Button>
+        )}
+      </div>
+      <div className="ml-auto flex flex-row gap-4 w-full md:w-fit justify-between">
+        <h4 className="text-whit flex">
+          Hi, {session?.user?.name?.split(" ")[0] || "User"}{" "}
+          <span className="ml-3 hidden md:flex">|</span>{" "}
+        </h4>{" "}
         <Button
           onClick={handleSignOut}
           className="bg-transparent text-white flex items-center gap-4"
