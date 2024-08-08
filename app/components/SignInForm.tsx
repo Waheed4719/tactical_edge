@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
 import { toast } from "react-toastify";
+import LoadingIndicator from "./LoadingIndicator";
 
 type Props = {};
 
@@ -19,6 +20,7 @@ const SignInForm = (props: Props) => {
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -52,11 +54,15 @@ const SignInForm = (props: Props) => {
       return;
     }
 
+    setLoading(true); // Start loading
+
     const res = await signIn("credentials", {
       email,
       password,
       redirect: false,
     });
+
+    setLoading(false); // Stop loading
 
     if (res?.error) {
       toast.error((res.error as string) || "Failed to sign in.");
@@ -84,7 +90,7 @@ const SignInForm = (props: Props) => {
           />
           {formErrors.email && (
             <p className="text-red-500 text-sm">{formErrors.email}</p>
-          )}{" "}
+          )}
         </div>
         <div>
           <Input
@@ -116,9 +122,14 @@ const SignInForm = (props: Props) => {
         </div>
         <Button
           type="submit"
-          className="h-[54px] w-[300px] rounded-md p-2 bg-primary"
+          className="h-[54px] w-[300px] rounded-md p-2 bg-primary disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={loading} // Disable button while loading
         >
-          Login
+          {loading ? (
+            <LoadingIndicator text="Logging in..." /> // Display loading text or spinner
+          ) : (
+            "Login"
+          )}
         </Button>
       </form>
       <Link className="text-sm mt-4" href="/signup">

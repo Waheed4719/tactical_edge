@@ -7,6 +7,7 @@ import { register } from "@/actions/register";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { toast } from "react-toastify";
+import LoadingIndicator from "./LoadingIndicator";
 
 type Props = {};
 
@@ -22,6 +23,7 @@ const SignUpForm = (props: Props) => {
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -59,20 +61,28 @@ const SignUpForm = (props: Props) => {
       return;
     }
 
-    const signUp = await register({
-      email,
-      password,
-      name,
-    });
+    setLoading(true);
 
-    e.currentTarget?.reset();
+    try {
+      const signUp = await register({
+        email,
+        password,
+        name,
+      });
 
-    if (signUp?.error) {
-      toast.error(signUp.error);
-      return;
-    } else {
-      toast.success("Signed up successfully.");
-      router.push("/signin");
+      e.currentTarget?.reset();
+
+      if (signUp?.error) {
+        toast.error(signUp.error);
+      } else {
+        toast.success("Signed up successfully.");
+        router.push("/signin");
+      }
+    } catch (error) {
+      console.log("error", error);
+      toast.error("An unexpected error occurred.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -125,9 +135,10 @@ const SignUpForm = (props: Props) => {
 
         <Button
           type="submit"
-          className="h-[54px] w-[300px] rounded-md p-2 bg-primary"
+          className={`h-[54px] w-[300px] rounded-md p-2 bg-primary  disabled:opacity-50 disabled:cursor-not-allowed`}
+          disabled={loading}
         >
-          Register
+          {loading ? <LoadingIndicator text="Registering..." /> : "Register"}
         </Button>
       </form>
       <Link className="text-sm mt-4" href="/signin">

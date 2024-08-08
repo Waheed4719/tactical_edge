@@ -8,6 +8,7 @@ import { addOrUpdateMovie } from "@/actions/addOrUpdateMovie";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { uploadToCloudinary } from "@/utils/cloudinary";
+import LoadingIndicator from "@/app/components/LoadingIndicator";
 
 const AddMovie = () => {
   const router = useRouter();
@@ -21,6 +22,7 @@ const AddMovie = () => {
     title?: string;
     publishingYear?: string;
   }>({});
+  const [loading, setLoading] = useState(false);
 
   const validateTitle = (value: string) => {
     if (!value) {
@@ -78,6 +80,7 @@ const AddMovie = () => {
     }
 
     if (isTitleValid && isPublishingYearValid && file) {
+      setLoading(true);
       try {
         const url = await uploadToCloudinary(file);
         // Perform the submit action
@@ -95,6 +98,8 @@ const AddMovie = () => {
         }
       } catch (error: any) {
         toast.error("An error occurred: " + error.message);
+      } finally {
+        setLoading(false);
       }
     } else {
       console.log("Form is invalid, showing errors.");
@@ -158,10 +163,11 @@ const AddMovie = () => {
             </Button>
             <Button
               size="large"
-              className="bg-primary text-white px-4 py-2 rounded flex flex-1 justify-center font-bold"
+              className={`bg-primary text-white px-4 py-2 rounded flex flex-1 justify-center font-bold disabled:opacity-50 disabled:cursor-not-allowed`}
               onClick={handleSubmit}
+              disabled={loading}
             >
-              Submit
+              {loading ? <LoadingIndicator text="Submitting..." /> : "Submit"}
             </Button>
           </div>
         </div>

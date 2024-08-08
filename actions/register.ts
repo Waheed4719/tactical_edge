@@ -2,13 +2,13 @@
 import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
 import bcrypt from "bcryptjs";
+import { NextResponse } from "next/server";
 
 export const register = async (values: any) => {
   const { email, password, name } = values;
 
   try {
     await connectDB();
-    console.log(values)
     const userFound = await User.findOne({ email });
     if (userFound) {
       return {
@@ -22,7 +22,14 @@ export const register = async (values: any) => {
       password: hashedPassword,
     });
     await user.save();
-  } catch (e) {
+
+    return {
+      error: false,
+    };
+  } catch (e: any) {
     console.log(e);
+    return {
+      error: e?.message as string,
+    };
   }
 };

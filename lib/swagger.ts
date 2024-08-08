@@ -19,73 +19,12 @@ export const getAPISpec = () => {
     apiFolder: "app/api",
     servers: [
       {
-        url: apiUrl,
+        url: "http://localhost:3000",
         description: "Development server",
       },
     ],
-    paths: {
-      "/api/movies": {
-        get: {
-          summary: "Get all movies",
-          responses: {
-            200: {
-              description: "List of movies",
-              content: {
-                "application/json": {
-                  schema: {
-                    type: "array",
-                    items: {
-                      $ref: "#/components/schemas/Movie",
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-        post: {
-          summary: "Create a new movie",
-          requestBody: {
-            required: true,
-            content: {
-              "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/Movie",
-                },
-              },
-            },
-          },
-          responses: {
-            201: {
-              description: "Movie created",
-              content: {
-                "application/json": {
-                  schema: {
-                    $ref: "#/components/schemas/Movie",
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-    components: {
-      schemas: {
-        Movie: {
-          type: "object",
-          properties: {
-            title: {
-              type: "string",
-            },
-            year: {
-              type: "number",
-            },
-          },
-          required: ["title", "year"],
-        },
-      },
-    },
+    paths: {},
+    components: {},
     definition: {
       openapi: "3.0.0",
       info: {
@@ -95,5 +34,5 @@ export const getAPISpec = () => {
     },
   });
 
-    return spec;
+  return spec;
 };

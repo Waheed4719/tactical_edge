@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useParams, useRouter } from "next/navigation";
 import { uploadToCloudinary } from "@/utils/cloudinary";
+import LoadingIndicator from "@/app/components/LoadingIndicator";
 
 type Movie = {
   title: string;
@@ -20,7 +21,6 @@ const EditMovie = () => {
   const router = useRouter();
   const { id: movieId } = useParams();
   const [file, setFile] = useState<File | null>(null);
-
   const [movie, setMovie] = useState<Movie | null>(null);
   const [imageUrl, setImageUrl] = useState<string>("");
   const [title, setTitle] = useState({ value: "", isValid: true });
@@ -32,6 +32,8 @@ const EditMovie = () => {
     title?: string;
     publishingYear?: string;
   }>({});
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     if (movieId) {
       // Fetch the movie data when component mounts
@@ -108,13 +110,14 @@ const EditMovie = () => {
       return;
     }
 
-    try {
-      let uploadedImageUrl = imageUrl;
-      if (file) {
-        uploadedImageUrl = await uploadToCloudinary(file);
-      }
+    if (isTitleValid && isPublishingYearValid) {
+      setLoading(true);
+      try {
+        let uploadedImageUrl = imageUrl;
+        if (file) {
+          uploadedImageUrl = await uploadToCloudinary(file);
+        }
 
-      if (isTitleValid && isPublishingYearValid && uploadedImageUrl) {
         // Perform the submit action
         const response = await addOrUpdateMovie({
           id: movieId as string,
@@ -129,11 +132,13 @@ const EditMovie = () => {
         } else {
           toast.error("Failed to update movie: " + response.error);
         }
-      } else {
-        console.log("Form is invalid, showing errors.");
+      } catch (error: any) {
+        toast.error("An error occurred: " + error.message);
+      } finally {
+        setLoading(false);
       }
-    } catch (error: any) {
-      toast.error("An error occurred: " + error.message);
+    } else {
+      console.log("Form is invalid, showing errors.");
     }
   };
 
@@ -202,10 +207,15 @@ const EditMovie = () => {
             </Button>
             <Button
               size="large"
-              className="bg-primary text-white px-4 py-2 rounded flex flex-1 justify-center font-bold"
+              className={`bg-primary text-white px-4 py-2 rounded flex flex-1 justify-center font-bold disabled:opacity-50 disabled:cursor-not-allowed`}
               onClick={handleSubmit}
+              disabled={loading}
             >
-              Submit
+              {loading ? (
+                  <LoadingIndicator text="Submitting..." />
+              ) : (
+                "Submit"
+              )}
             </Button>
           </div>
         </div>
