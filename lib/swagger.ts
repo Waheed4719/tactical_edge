@@ -12,7 +12,7 @@ if (typeof window !== "undefined" && window.location) {
   apiUrl = `http://${hostname}:3000`;
 }
 
-export const getAPISpec = async () => {
+export const getAPISpec = () => {
   const spec = createSwaggerSpec({
     title: "Movie API",
     version: "1.0.0",
